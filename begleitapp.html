@@ -1,0 +1,600 @@
+<title>Begleitapp Englischlerner</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap');
+
+:root{
+  --brand:#003399;
+  --brand-ink:#00287a;
+  --gold:#F4B351;
+  --gold-ink:#8A5B12;
+  --paper:#FBFCFE;
+  --surface:#F3F6FB;
+  --surface-raised:#FFFFFF;
+  --border:#D6DEEC;
+  --ink:#1B2430;
+  --muted:#5B6B85;
+  --chip-bg:#DCE6F7;
+  --focus:#0B57D0;
+  --brand-on-dark:#7FA0F0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --brand:#7FA0F0;
+    --brand-ink:#9FBBFA;
+    --gold:#F4B351;
+    --gold-ink:#F7C878;
+    --paper:#0E1526;
+    --surface:#141D33;
+    --surface-raised:#182544;
+    --border:#2A3A5C;
+    --ink:#E8EDF7;
+    --muted:#93A2C2;
+    --chip-bg:#1E2C4D;
+    --focus:#7FA0F0;
+  }
+}
+:root[data-theme="dark"]{
+  --brand:#7FA0F0;
+  --brand-ink:#9FBBFA;
+  --gold:#F4B351;
+  --gold-ink:#F7C878;
+  --paper:#0E1526;
+  --surface:#141D33;
+  --surface-raised:#182544;
+  --border:#2A3A5C;
+  --ink:#E8EDF7;
+  --muted:#93A2C2;
+  --chip-bg:#1E2C4D;
+  --focus:#7FA0F0;
+}
+
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Source Sans 3",system-ui,Arial,sans-serif;
+  line-height:1.5;
+  font-size:16px;
+}
+h1,h2,h3,.label,button,.tab,.eyebrow{font-family:"Lexend",system-ui,Arial,sans-serif;}
+:focus-visible{outline:2.5px solid var(--focus);outline-offset:2px;}
+button{font:inherit;cursor:pointer;}
+a{color:inherit;}
+
+.shell{max-width:680px;margin:0 auto;padding:0 0 64px;}
+
+header{
+  background:var(--brand);
+  color:#fff;
+  padding:22px 20px 20px;
+  position:sticky;
+  top:0;
+  z-index:20;
+  box-shadow:0 2px 10px rgba(0,0,0,.12);
+}
+header .eyebrow{
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  font-size:11px;
+  font-weight:600;
+  opacity:.82;
+  margin-bottom:4px;
+}
+header h1{
+  margin:0 0 3px;
+  font-size:22px;
+  font-weight:700;
+  text-wrap:balance;
+}
+header .sub{
+  font-size:13.5px;
+  opacity:.88;
+  margin-bottom:16px;
+}
+.searchbar{
+  display:flex;
+  gap:8px;
+}
+.searchbar input{
+  flex:1;
+  min-width:0;
+  border:1.5px solid rgba(255,255,255,.35);
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  border-radius:10px;
+  padding:11px 14px;
+  font-size:15px;
+  font-family:inherit;
+}
+.searchbar input::placeholder{color:rgba(255,255,255,.65);}
+.searchbar input:focus-visible{outline-color:#fff;}
+.searchbar button{
+  background:var(--gold);
+  color:#3D2705;
+  border:none;
+  border-radius:10px;
+  padding:0 18px;
+  font-weight:600;
+  font-size:14.5px;
+  white-space:nowrap;
+}
+.searchbar button:hover{filter:brightness(1.04);}
+
+nav.tabs{
+  display:flex;
+  gap:6px;
+  overflow-x:auto;
+  padding:14px 20px 0;
+  background:var(--paper);
+  position:sticky;
+  top:118px;
+  z-index:19;
+  border-bottom:1px solid var(--border);
+}
+.tab{
+  flex:0 0 auto;
+  border:none;
+  background:transparent;
+  color:var(--muted);
+  padding:9px 14px 12px;
+  font-size:14px;
+  font-weight:600;
+  border-bottom:2.5px solid transparent;
+  margin-bottom:-1px;
+}
+.tab.active{color:var(--brand);border-bottom-color:var(--brand);}
+.tab:hover:not(.active):not(:disabled){color:var(--ink);}
+.tab:disabled{color:var(--border);cursor:default;}
+
+main{padding:22px 20px 0;}
+
+.roadmap{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin:2px 0 22px;
+}
+.roadmap .chip{
+  font-size:11.5px;
+  font-weight:600;
+  padding:4px 10px;
+  border-radius:20px;
+  border:1px solid var(--border);
+  color:var(--muted);
+  background:var(--surface);
+}
+.roadmap .chip.done{
+  color:var(--brand);
+  border-color:var(--brand);
+  background:var(--chip-bg);
+}
+
+.panel{display:none;}
+.panel.active{display:block;}
+
+.section-head{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  border-bottom:2px solid var(--gold);
+  padding-bottom:8px;
+  margin-bottom:4px;
+}
+.section-head h2{
+  font-size:16px;
+  margin:0;
+  font-weight:700;
+}
+.section-head .count{
+  font-size:12.5px;
+  color:var(--muted);
+  font-weight:600;
+}
+
+.vokab-list{margin-top:10px;}
+.vokab-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:13px 4px;
+  border-bottom:1px solid var(--border);
+}
+.vokab-row:last-child{border-bottom:none;}
+.wort{flex:1;min-width:0;}
+.wort .en{font-weight:700;font-size:15.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.wort .de{color:var(--muted);font-size:13.5px;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.aktionen{display:flex;gap:5px;flex:0 0 auto;}
+
+.icon-btn{
+  width:36px;height:36px;
+  border-radius:10px;
+  border:1.5px solid var(--border);
+  background:var(--surface-raised);
+  color:var(--brand);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:15px;
+  transition:transform .08s ease;
+}
+.icon-btn:hover{border-color:var(--brand);}
+.icon-btn:active{transform:scale(.94);}
+.icon-btn.speaking{background:var(--chip-bg);border-color:var(--brand);}
+.icon-btn.yg{color:var(--gold-ink);font-size:10.5px;font-weight:700;letter-spacing:.02em;text-decoration:none;}
+:root[data-theme="dark"] .icon-btn.yg,
+.icon-btn.yg{background:var(--surface-raised);}
+.icon-btn.leo{color:var(--brand);font-size:9.5px;font-weight:700;letter-spacing:.01em;text-decoration:none;background:var(--surface-raised);}
+.icon-btn.star{font-size:17px;}
+.icon-btn.star.on{color:var(--gold-ink);border-color:var(--gold);background:#FEF3DC;}
+:root[data-theme="dark"] .icon-btn.star.on{background:#3A2B0C;}
+
+.attrib{
+  font-size:11.5px;
+  color:var(--muted);
+  text-align:right;
+  margin-top:10px;
+}
+.attrib a{color:var(--brand);text-decoration:underline;}
+
+.empty{
+  padding:36px 12px;
+  text-align:center;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.search-result{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  margin-bottom:12px;
+}
+.search-result .en{font-weight:700;font-size:16px;}
+.search-result .row-actions{display:flex;gap:6px;margin-top:10px;}
+
+.history-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 2px;
+  border-bottom:1px solid var(--border);
+  font-size:14.5px;
+}
+.history-item button.replay{
+  background:none;border:none;color:var(--brand);font-weight:600;font-size:13.5px;
+}
+
+.hinweis{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  font-size:13px;
+  color:var(--muted);
+  margin:18px 0 0;
+}
+.hinweis b{color:var(--ink);}
+
+.legend{
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+  font-size:12px;
+  color:var(--muted);
+  margin-top:16px;
+}
+.legend span{display:inline-flex;align-items:center;gap:5px;}
+.legend .mini{
+  width:20px;height:20px;border-radius:6px;border:1.5px solid var(--border);
+  display:inline-flex;align-items:center;justify-content:center;font-size:10px;
+}
+
+footer{
+  margin-top:34px;
+  padding-top:16px;
+  border-top:1px solid var(--border);
+  font-size:12px;
+  color:var(--muted);
+  text-align:center;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .icon-btn{transition:none;}
+}
+</style>
+
+<div class="shell">
+
+  <header>
+    <div class="eyebrow">Begleitapp</div>
+    <h1>Skript für neue Englischlerner</h1>
+    <div class="sub">Aussprache hören, üben, nachschlagen</div>
+    <div class="searchbar">
+      <input type="text" id="freieSuche" placeholder="Eigenes Wort suchen, z. B. teacher" autocomplete="off">
+      <button id="sucheBtn" type="button">Suchen</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs"></nav>
+
+  <main>
+    <div class="roadmap" id="roadmap"></div>
+
+    <div id="panels"></div>
+
+    <div class="hinweis" id="ygHinweis">
+      <b>Zur Aussprache:</b> Der Lautsprecher-Button liest das Wort direkt vor (Sprachausgabe deines Geräts). Der YG-Button öffnet YouGlish in einem neuen Tab mit Videobeispielen von echten Sprecher:innen. Der LEO-Button öffnet den Wörterbucheintrag auf dict.leo.org in einem neuen Tab, dort lässt sich die Aussprache über das dortige Lautsprecher-Symbol zusätzlich anhören.
+    </div>
+
+    <div class="legend">
+      <span><span class="mini">▶</span> Wort vorlesen lassen</span>
+      <span><span class="mini" style="color:var(--gold-ink);font-size:8px;font-weight:700;">YG</span> YouGlish-Videobeispiele öffnen</span>
+      <span><span class="mini" style="color:var(--brand);font-size:7.5px;font-weight:700;">LEO</span> LEO-Wörterbucheintrag öffnen</span>
+      <span><span class="mini">☆</span> zu Favoriten hinzufügen</span>
+    </div>
+
+    <footer>Begleitapp · Version 1 (Lektion 1 &amp; 2) · weitere Lektionen folgen laufend</footer>
+  </main>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var LESSONS = {
+    1: {
+      title: "Lektion 1",
+      full: "Lektion 1 · Aussprache-Grundlagen",
+      vocab: [
+        {en:"Hello", de:"Hallo"},
+        {en:"Good morning", de:"Guten Morgen"},
+        {en:"Good afternoon", de:"Guten Tag (nachmittags)"},
+        {en:"Good evening", de:"Guten Abend"},
+        {en:"Good night", de:"Gute Nacht"},
+        {en:"Goodbye", de:"Auf Wiedersehen"},
+        {en:"How are you?", de:"Wie geht es dir?"},
+        {en:"I'm fine, thank you", de:"Mir geht es gut, danke"},
+        {en:"Nice to meet you", de:"Schön, dich kennenzulernen"},
+        {en:"See you", de:"Bis bald"}
+      ]
+    },
+    2: {
+      title: "Lektion 2",
+      full: "Lektion 2 · Sich vorstellen",
+      vocab: [
+        {en:"name", de:"der Name"},
+        {en:"country", de:"das Land"},
+        {en:"nationality", de:"die Nationalität"},
+        {en:"language", de:"die Sprache"},
+        {en:"age", de:"das Alter"},
+        {en:"job", de:"der Beruf"},
+        {en:"apprentice", de:"der/die Auszubildende"},
+        {en:"trainee", de:"der/die Praktikant(in)"},
+        {en:"student", de:"der/die Schüler(in)"},
+        {en:"worker", de:"der/die Arbeiter(in)"},
+        {en:"company", de:"die Firma"},
+        {en:"colleague", de:"der/die Kollege/Kollegin"}
+      ]
+    }
+  };
+  var LESSON_ORDER = [1,2,3,4,5,6,7,8,9,10];
+  var LESSON_LABELS = {
+    3:"Zahlen, Zeit, Datum", 4:"Familie & Alltag", 5:"„to have“ & Beschreibungen",
+    6:"Ausbildung & Beruf", 7:"Am Arbeitsplatz", 8:"Einkaufen", 9:"Orte & Weg", 10:"False Friends"
+  };
+
+  var STORE_FAV = "begleitapp_favoriten_v1";
+  var STORE_HIST = "begleitapp_suchverlauf_v1";
+
+  function safeGet(key){
+    try{ var v = localStorage.getItem(key); return v ? JSON.parse(v) : null; }
+    catch(e){ return null; }
+  }
+  function safeSet(key, val){
+    try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){}
+  }
+
+  var favoriten = safeGet(STORE_FAV) || [];
+  var verlauf = safeGet(STORE_HIST) || [];
+
+  function favKey(en, quelle){ return quelle + "::" + en.toLowerCase(); }
+  function istFavorit(en, quelle){
+    return favoriten.some(function(f){ return favKey(f.en, f.quelle) === favKey(en, quelle); });
+  }
+  function toggleFavorit(en, de, quelle){
+    var key = favKey(en, quelle);
+    var idx = favoriten.findIndex(function(f){ return favKey(f.en, f.quelle) === key; });
+    if (idx > -1) favoriten.splice(idx, 1);
+    else favoriten.unshift({en:en, de:de||"", quelle:quelle});
+    safeSet(STORE_FAV, favoriten);
+  }
+
+  function youglishUrl(word){
+    return "https://youglish.com/pronounce/" + encodeURIComponent(word) + "/english";
+  }
+  function leoUrl(word){
+    return "https://dict.leo.org/englisch-deutsch/" + encodeURIComponent(word);
+  }
+
+  var voices = [];
+  function ladeVoices(){ voices = (window.speechSynthesis ? speechSynthesis.getVoices() : []); }
+  if (window.speechSynthesis){
+    ladeVoices();
+    speechSynthesis.onvoiceschanged = ladeVoices;
+  }
+  function sprich(text, btn){
+    if (!window.speechSynthesis){
+      alert("Dieses Gerät unterstützt leider keine Sprachausgabe im Browser.");
+      return;
+    }
+    speechSynthesis.cancel();
+    var utter = new SpeechSynthesisUtterance(text);
+    var stimme = voices.find(function(v){ return /^en-(GB|US)/i.test(v.lang); }) ||
+                 voices.find(function(v){ return /^en/i.test(v.lang); });
+    if (stimme) utter.voice = stimme;
+    utter.lang = stimme ? stimme.lang : "en-US";
+    utter.rate = 0.92;
+    if (btn){
+      utter.onstart = function(){ btn.classList.add("speaking"); };
+      utter.onend = function(){ btn.classList.remove("speaking"); };
+    }
+    speechSynthesis.speak(utter);
+  }
+
+  function el(tag, attrs, children){
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function(k){
+      if (k === "text") e.textContent = attrs[k];
+      else if (k === "html") e.innerHTML = attrs[k];
+      else e.setAttribute(k, attrs[k]);
+    });
+    (children||[]).forEach(function(c){ if (c) e.appendChild(c); });
+    return e;
+  }
+
+  function vokabelZeile(en, de, quelle, labelQuelle){
+    var row = el("div", {class:"vokab-row"});
+    var wort = el("div", {class:"wort"}, [
+      el("div", {class:"en", text:en}),
+      el("div", {class:"de", text: de + (labelQuelle ? "  ·  " + labelQuelle : "")})
+    ]);
+    var aktionen = el("div", {class:"aktionen"});
+
+    var playBtn = el("button", {class:"icon-btn", type:"button", "aria-label":"Aussprache vorlesen: " + en, text:"▶"});
+    playBtn.addEventListener("click", function(){ sprich(en, playBtn); });
+
+    var ygLink = el("a", {class:"icon-btn yg", href: youglishUrl(en), target:"_blank", rel:"noopener", "aria-label":"YouGlish-Videobeispiele für " + en + " öffnen (neuer Tab)", text:"YG"});
+
+    var leoLink = el("a", {class:"icon-btn leo", href: leoUrl(en), target:"_blank", rel:"noopener", "aria-label":"LEO-Wörterbucheintrag für " + en + " öffnen (neuer Tab)", text:"LEO"});
+
+    var starBtn = el("button", {class:"icon-btn star" + (istFavorit(en, quelle) ? " on" : ""), type:"button", "aria-label":"Favorit umschalten: " + en, text: istFavorit(en, quelle) ? "★" : "☆"});
+    starBtn.addEventListener("click", function(){
+      toggleFavorit(en, de, quelle);
+      render();
+    });
+
+    aktionen.appendChild(playBtn);
+    aktionen.appendChild(ygLink);
+    aktionen.appendChild(leoLink);
+    aktionen.appendChild(starBtn);
+    row.appendChild(wort);
+    row.appendChild(aktionen);
+    return row;
+  }
+
+  var aktuellerTab = "1";
+
+  function baueTabs(){
+    var nav = document.getElementById("tabs");
+    nav.innerHTML = "";
+    [["1","Lektion 1"], ["2","Lektion 2"], ["suche","Meine Suche"], ["favoriten","Favoriten ★"]].forEach(function(t){
+      var btn = el("button", {class:"tab" + (t[0]===aktuellerTab?" active":""), type:"button", text:t[1]});
+      btn.addEventListener("click", function(){ aktuellerTab = t[0]; render(); });
+      nav.appendChild(btn);
+    });
+  }
+
+  function baueRoadmap(){
+    var wrap = document.getElementById("roadmap");
+    wrap.innerHTML = "";
+    LESSON_ORDER.forEach(function(n){
+      var fertig = !!LESSONS[n];
+      var label = fertig ? ("L" + n + " " + LESSONS[n].title.replace("Lektion "+n,"").trim()) : ("L" + n + (LESSON_LABELS[n] ? " · " + LESSON_LABELS[n] : ""));
+      var chip = el("span", {class:"chip" + (fertig ? " done" : ""), text: fertig ? ("L" + n + " ✓") : ("L" + n + " folgt")});
+      chip.title = fertig ? LESSONS[n].full : ("Lektion " + n + (LESSON_LABELS[n] ? ": " + LESSON_LABELS[n] : "") + " — noch nicht in der App");
+      wrap.appendChild(chip);
+    });
+  }
+
+  function panelLektion(n){
+    var data = LESSONS[n];
+    var wrap = el("div", {class:"panel active"});
+    var head = el("div", {class:"section-head"}, [
+      el("h2", {text:data.full}),
+      el("span", {class:"count", text:data.vocab.length + " Vokabeln"})
+    ]);
+    wrap.appendChild(head);
+    var list = el("div", {class:"vokab-list"});
+    data.vocab.forEach(function(v){
+      list.appendChild(vokabelZeile(v.en, v.de, "l" + n));
+    });
+    wrap.appendChild(list);
+    return wrap;
+  }
+
+  function panelFavoriten(){
+    var wrap = el("div", {class:"panel active"});
+    var head = el("div", {class:"section-head"}, [
+      el("h2", {text:"Favoriten"}),
+      el("span", {class:"count", text:favoriten.length + " gespeichert"})
+    ]);
+    wrap.appendChild(head);
+    if (!favoriten.length){
+      wrap.appendChild(el("div", {class:"empty", text:"Noch keine Favoriten. Tippe bei einer Vokabel auf ☆, um sie hier zu sammeln."}));
+      return wrap;
+    }
+    var list = el("div", {class:"vokab-list"});
+    favoriten.forEach(function(f){
+      var quelleLabel = f.quelle === "l1" ? "Lektion 1" : f.quelle === "l2" ? "Lektion 2" : "eigene Suche";
+      list.appendChild(vokabelZeile(f.en, f.de, f.quelle, quelleLabel));
+    });
+    wrap.appendChild(list);
+    return wrap;
+  }
+
+  function panelSuche(){
+    var wrap = el("div", {class:"panel active"});
+    var head = el("div", {class:"section-head"}, [
+      el("h2", {text:"Meine Suche"}),
+      el("span", {class:"count", text:"eigene Wörter"})
+    ]);
+    wrap.appendChild(head);
+    wrap.appendChild(el("div", {class:"empty", id:"sucheLeer", text: verlauf.length ? "" : "Gib oben ein Wort ein, das nicht im Skript steht — z. B. teacher oder computer."}));
+
+    if (verlauf.length){
+      var list = el("div", {class:"vokab-list", style:"margin-top:6px;"});
+      verlauf.forEach(function(w){
+        list.appendChild(vokabelZeile(w, "freie Suche", "suche"));
+      });
+      wrap.appendChild(list);
+    }
+    return wrap;
+  }
+
+  function render(){
+    baueTabs();
+    baueRoadmap();
+    var panels = document.getElementById("panels");
+    panels.innerHTML = "";
+    if (aktuellerTab === "1") panels.appendChild(panelLektion(1));
+    else if (aktuellerTab === "2") panels.appendChild(panelLektion(2));
+    else if (aktuellerTab === "favoriten") panels.appendChild(panelFavoriten());
+    else panels.appendChild(panelSuche());
+  }
+
+  function sucheWort(){
+    var input = document.getElementById("freieSuche");
+    var wort = input.value.trim();
+    if (!wort) return;
+    verlauf = verlauf.filter(function(w){ return w.toLowerCase() !== wort.toLowerCase(); });
+    verlauf.unshift(wort);
+    if (verlauf.length > 25) verlauf = verlauf.slice(0, 25);
+    safeSet(STORE_HIST, verlauf);
+    input.value = "";
+    aktuellerTab = "suche";
+    render();
+    sprich(wort, null);
+  }
+
+  document.getElementById("sucheBtn").addEventListener("click", sucheWort);
+  document.getElementById("freieSuche").addEventListener("keydown", function(e){
+    if (e.key === "Enter") sucheWort();
+  });
+
+  render();
+})();
+</script>
